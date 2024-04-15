@@ -1,0 +1,5 @@
+<launch>
+    <node name="image_loader" pkg="image_nav" type="image_loader_node" output="screen" />
+    <node name="image_processor" pkg="image_nav" type="image_processor_node" output="screen" />
+    <node name="path_planner" pkg="image_nav" type="path_planner_node" output="screen" />
+</launch>
