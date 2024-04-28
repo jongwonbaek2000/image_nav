@@ -258,14 +258,17 @@ void PathPlanner::planPath(const cv::Mat& binaryMap, const geometry_msgs::PoseSt
     };
 
     // 위경도 좌표를 기준으로 UTM 좌표로 변환
-    double top_left_lat = 37.3417797, top_left_lon = 126.7315932;
+    double top_left_lat = 37.3417121382694, top_left_lon = 126.731593457396;
     auto [utm_origin_x, utm_origin_y, zone] = gpsToUTM(top_left_lat, top_left_lon);
 
+    int pixel_cal_x = 5;
+    int pixel_cal_y = 100;
+
     // UTM 좌표를 픽셀 좌표로 변환하는 함수
-    double pixel_per_meter = 14.625; // 예시 값, 실제 값으로 대체 필요
+    double pixel_per_meter = 16.1668; // 예시 값, 실제 값으로 대체 필요 *****매우 중요한 파라미터
     auto utmToPixel = [&](double x, double y) -> cv::Point2i {
-        int pixel_x = static_cast<int>((x - utm_origin_x) * pixel_per_meter);
-        int pixel_y = static_cast<int>((utm_origin_y - y) * pixel_per_meter);
+        int pixel_x = static_cast<int>((x - utm_origin_x) * pixel_per_meter) - pixel_cal_x;//***교정치
+        int pixel_y = static_cast<int>((utm_origin_y - y) * pixel_per_meter) - pixel_cal_y;//***교정치
         return cv::Point2i(pixel_x, pixel_y);
     };
 
@@ -273,15 +276,22 @@ void PathPlanner::planPath(const cv::Mat& binaryMap, const geometry_msgs::PoseSt
     auto [start_utm_x, start_utm_y, start_zone] = gpsToUTM(start.pose.position.x, start.pose.position.y);
     auto [goal_utm_x, goal_utm_y, goal_zone] = gpsToUTM(goal.pose.position.x, goal.pose.position.y);
 
+    ROS_INFO_STREAM("Goal UTM x: " << goal_utm_x);
+    ROS_INFO_STREAM("Goal UTM y: " << goal_utm_y);
+
     // UTM 좌표를 픽셀 좌표로 변환하여 변수에 저장
     cv::Point2i start_pixel = utmToPixel(start_utm_x, start_utm_y);
     cv::Point2i goal_pixel = utmToPixel(goal_utm_x, goal_utm_y);
+
+
+    
     // UTM 영역 번호가 다르면 에러 처리
     if (start_zone != zone || goal_zone != zone) {
         ROS_ERROR("Start and goal positions are in different UTM zones. Cannot plan path.");
         return;
     }
     /////////////////////
+
     ROS_INFO_STREAM("Start pixel: " << start_pixel);
     ROS_INFO_STREAM("Goal pixel: " << goal_pixel);
     ROS_INFO_STREAM("zone: " << zone);
@@ -459,8 +469,9 @@ void PathPlanner::planPath(const cv::Mat& binaryMap, const geometry_msgs::PoseSt
 
          // 픽셀 좌표를 UTM 좌표로 변환하는 함수
         auto pixelToUTM = [&](const cv::Point2i& pixel) -> std::pair<double, double> {
-            double x = utm_origin_x + static_cast<double>(pixel.x) / pixel_per_meter;
-            double y = utm_origin_y - static_cast<double>(pixel.y) / pixel_per_meter;
+            double x = utm_origin_x + (static_cast<double>(pixel.x) + pixel_cal_x) / pixel_per_meter;
+            double y = utm_origin_y - (static_cast<double>(pixel.y) + pixel_cal_y)/ pixel_per_meter;
+            
             return std::make_pair(x, y);
         };
 
@@ -485,6 +496,7 @@ void PathPlanner::planPath(const cv::Mat& binaryMap, const geometry_msgs::PoseSt
             pose.pose.position.x = lat;
             pose.pose.position.y = lon;
             path_poses.push_back(pose);
+            ROS_INFO_STREAM("path: " << point);
         }
 
             // 경로 결과를 CSV 파일에 기록
