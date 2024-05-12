@@ -10,6 +10,11 @@
 #include <ros/package.h>  // Add this line
 #include <sys/stat.h>
 
+void ROSTEST()
+{
+    ROS_INFO_STREAM("TEST OK");
+}
+
 void visualizePRM(const Graph &graph, const cv::Mat &binaryMap, const std::vector<int> &pathIndices)
 {
     // 이진맵을 반전시켜서 흑백 이미지 생성
@@ -161,7 +166,8 @@ PathPlanner::PathPlanner() : nh_("~"), path_planned_(false){
 
     char filename[128];
     std::time_t currentTime = std::time(nullptr);
-    std::strftime(filename, sizeof(filename), "path_%Y%m%d_%H%M%S.csv", std::localtime(&currentTime));
+    //std::strftime(filename, sizeof(filename), "path_%Y%m%d_%H%M%S.csv", std::localtime(&currentTime));
+    std::strftime(filename, sizeof(filename), "path.csv", std::localtime(&currentTime));
 
     std::string package_path = ros::package::getPath("image_nav");
     std::string csvs_path = package_path + "/csvs";
@@ -208,24 +214,7 @@ void PathPlanner::binaryMapCallback(const sensor_msgs::Image::ConstPtr& msg) {
         planPath(binary_map_, start_pose_, goal_pose_);
     }
 }
-/*
-bool PathPlanner::isPathCollisionFree(const cv::Point2i& start, const cv::Point2i& end, const cv::Mat& binaryMap) {
-    cv::LineIterator it(binaryMap, start, end, 8);
-    bool collision_started = binaryMap.at<uchar>(start) == 255;
-    
-    for (int k = 0; k < it.count; k++, ++it) {
-        uchar pixel_value = binaryMap.at<uchar>(it.pos());
 
-        if (collision_started && pixel_value == 0) {
-            // 출발점이 장애물 내부에 있었지만 이제 자유롭게 이동할 수 있습니다.
-            collision_started = false;
-        } else if (!collision_started && pixel_value == 255) {
-            // 자유롭게 이동하다가 장애물을 만났습니다.
-            return false;
-        }
-    }
-    return true; // 경로상에 장애물이 없거나, 최초의 장애물 이후 자유롭게 이동 가능합니다.
-}*/
 
 // isPathCollisionFree 함수 수정
 bool PathPlanner::isPathCollisionFree(const cv::Point2i& start, const cv::Point2i& end, const cv::Mat& binaryMap) {
@@ -299,7 +288,7 @@ void PathPlanner::planPath(const cv::Mat& binaryMap, const geometry_msgs::PoseSt
     /////////////////////
     // PRM 알고리즘 실행
     Graph graph;
-    const int numNodes = 10000;
+    const int numNodes = 12000;
     const double prmConnectionDistance = 150;
 
     // 시작점과 도착점을 노드로 추가
@@ -365,89 +354,6 @@ void PathPlanner::planPath(const cv::Mat& binaryMap, const geometry_msgs::PoseSt
     }
 
 
-
-/*
-
-    // 출발점과 도착점에 연결되는 간선을 추가합니다.
-    for (int i = 0; i < graph.nodes.size(); i++) {
-        // 출발점 혹은 도착점과 현재 노드 i 사이의 거리를 계산합니다.
-        double distance_to_start = cv::norm(graph.nodes[i].coord - graph.nodes[start_node_idx].coord);
-        double distance_to_goal = cv::norm(graph.nodes[i].coord - graph.nodes[goal_node_idx].coord);
-
-        // 출발점과 도착점이 장애물 내부에 있을 경우,
-        // 해당 노드가 장애물 외부에 있으면서 다른 장애물을 뚫고 지나가지 않도록 검사합니다.
-        if (i != start_node_idx && binaryMap.at<uchar>(graph.nodes[start_node_idx].coord) == 255) {
-            if (isPathCollisionFree(graph.nodes[start_node_idx].coord, graph.nodes[i].coord, binaryMap)) {
-                graph.addEdge(start_node_idx, i, distance_to_start);
-            }
-        }
-        if (i != goal_node_idx && binaryMap.at<uchar>(graph.nodes[goal_node_idx].coord) == 255) {
-            if (isPathCollisionFree(graph.nodes[goal_node_idx].coord, graph.nodes[i].coord, binaryMap)) {
-                graph.addEdge(goal_node_idx, i, distance_to_goal);
-            }
-        }
-    }
-
-
-
-// 나머지 노드들 사이의 간선을 충돌 검사를 통해 추가하는 코드는 그대로 유지합니다.
-
-    // 나머지 노드들 사이의 간선을 충돌 검사를 통해 추가합니다.
-    for (int i = 0; i < graph.nodes.size(); i++) {
-        for (int j = i + 1; j < graph.nodes.size(); j++) {
-            // 출발점과 도착점은 제외
-            if (i == start_node_idx || i == goal_node_idx || j == start_node_idx || j == goal_node_idx) {
-                continue;
-            }
-
-            cv::Point2i node1 = graph.nodes[i].coord;
-            cv::Point2i node2 = graph.nodes[j].coord;
-            double distance = cv::norm(node1 - node2);
-            if (distance < prmConnectionDistance) {
-                cv::LineIterator it(binaryMap, node1, node2, 8);
-                bool collision_free = true;
-                for (int k = 0; k < it.count; k++, ++it) {
-                    if (binaryMap.at<uchar>(it.pos()) == 255) {
-                        collision_free = false;
-                        break;
-                    }
-                }
-                if (collision_free) {
-                    graph.addEdge(i, j, distance);
-                }
-            }
-        }
-    }
-
-
-
-
-*/
-
-
-/*
-    // 각 노드 쌍 사이의 연결을 확인하는 부분
-    for (int i = 0; i < graph.nodes.size(); i++) {
-        for (int j = i + 1; j < graph.nodes.size(); j++) {
-            cv::Point2i node1 = graph.nodes[i].coord;
-            cv::Point2i node2 = graph.nodes[j].coord;
-            double distance = cv::norm(node1 - node2);
-            if (distance < prmConnectionDistance) {
-                cv::LineIterator it(binaryMap, node1, node2, 8);
-                bool collision_free = true;
-                for (int k = 0; k < it.count; k++, ++it) {
-                    if (binaryMap.at<uchar>(it.pos()) == 255) { // 장애물에 부딪히면 충돌로 간주
-                        collision_free = false;
-                        break;
-                    }
-                }
-                if (collision_free) {
-                    graph.addEdge(i, j, distance);
-                }
-            }
-        }
-    }
-*/
     // 시작점과 도착점 사이의 최적 경로 찾기
     std::vector<int> path_indices = graph.shortestPath(start_node_idx, goal_node_idx);
     

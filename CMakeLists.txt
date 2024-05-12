@@ -75,3 +75,12 @@ target_link_libraries(image_loader_node
 ${GeographicLib_LIBRARIES}
 
  )
+
+
+ add_executable(csv_out_node src/csv_out_node.cpp)
+target_link_libraries(csv_out_node
+ ${catkin_LIBRARIES} 
+ ${OpenCV_LIBRARIES}
+${GeographicLib_LIBRARIES}
+
+ )
