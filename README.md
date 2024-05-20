@@ -86,6 +86,46 @@ Replace ```<goal_lat>``` and ```<goal_lon>``` with the desired latitude and long
 4. The package will automatically plan the path and visualize the result once both the start and goal poses are received, along with the binary map.
 5. The planned path will be saved to a CSV file in the ```csvs``` folder within the package directory.
 
+# ROS Topics
+
+The package uses the following ROS topics:
+
+- `/binary_map` (sensor_msgs/Image): The binary map representing obstacles and free space.
+- `/robot_pose` (geometry_msgs/PoseStamped): The current and goal poses of the robot.
+- `/planned_path` (nav_msgs/Path): The planned collision-free path between the start and goal poses.
+- `/ublox_gps` (sensor_msgs/NavSatFix): The current GPS coordinates of the robot.
+- `/destination_reached` (std_msgs/Bool): A flag indicating whether the robot has reached the destination or not.
+
+# csv_out_node
+
+When running `rosrun image_nav csv_out_node`, the node will subscribe to the `/ublox_gps` topic to receive the current GPS coordinates of the robot. It will then compare these coordinates with the coordinates in the `path.csv` file generated during path planning.
+
+If the current GPS coordinates are within a certain threshold distance from any of the coordinates in the `path.csv` file, the node will publish a `true` value on the `/destination_reached` topic using the `std_msgs/Bool` message type. Otherwise, it will publish a `false` value.
+
+You can use this information to determine if the robot has reached its destination based on the planned path.
+
+# Usage
+
+1. Run the `csv_out_node`:
+
+```
+rosrun image_nav csv_out_node
+```
+2. Publish the current GPS coordinates by running:
+
+```
+rostopic pub /ublox_gps sensor_msgs/NavSatFix "{latitude: <current_lat>, longitude: <current_lon>}" -1
+```
+Replace <current_lat> and <current_lon> with the actual GPS coordinates of the robot.
+
+3. Subscribe to the /destination_reached topic to check if the robot has reached its destination:
+
+```
+rostopic echo /destination_reached
+```
+This will print ```true``` if the robot is within the threshold distance from any of the coordinates in the ```path.csv``` file, and ```false``` otherwise.
+
+
 # Troubleshooting
 * If you encounter any issues or errors, check the ROS logs for error * messages or warnings.
 * Ensure that the dependencies (ROS, OpenCV, GeographicLib) are installed correctly and compatible with your system.
