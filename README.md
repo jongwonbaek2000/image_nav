@@ -26,7 +26,6 @@ or
 cd /path/to/your/ros_ws
 catkin build
 ```
-# Usage
 # Launch File
 To run the package, use the provided launch file:
 ```
