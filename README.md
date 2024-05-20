@@ -63,10 +63,10 @@ The package contains the following main files:
 # Examples
 You can test the package by providing a binary map image and specifying start and goal poses through the ROS topic /robot_pose.
 
-1. Load a binary map image by running:
+1. Make waypoints in path.csv with /image_nav/csvs/binary_map.png
 
 ```
-rosrun image_nav image_loader_node /path/to/your/binary_map.png
+roslaunch image_nav image_nav.launch
 ```
 2. Publish the start pose by running:
 
@@ -108,7 +108,7 @@ You can use this information to determine if the robot has reached its destinati
 1. Run the `csv_out_node`:
 
 ```
-roslaunch image_nav image_nav.launch
+rosrun image_nav csv_out_node
 ```
 2. Publish the current GPS coordinates by running:
 
