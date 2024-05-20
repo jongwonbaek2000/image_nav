@@ -71,7 +71,8 @@ rosrun image_nav image_loader_node /path/to/your/binary_map.png
 ```
 2. Publish the start pose by running:
 
-```rostopic pub /robot_pose geometry_msgs/PoseStamped '{header: {stamp: now, frame_id: "map"}, pose: {position: {x: <start_lat>, y: <start_lon>, z: 0.0}, orientation: {w: 1.0}}}'
+```
+rostopic pub /robot_pose geometry_msgs/PoseStamped '{header: {stamp: now, frame_id: "map"}, pose: {position: {x: <start_lat>, y: <start_lon>, z: 0.0}, orientation: {w: 1.0}}}'
 ```
 Replace ```<start_lat> and ```<start_lon>``` with the desired latitude and longitude values for the start pose.
 
