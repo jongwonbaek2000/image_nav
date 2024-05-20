@@ -108,7 +108,7 @@ You can use this information to determine if the robot has reached its destinati
 1. Run the `csv_out_node`:
 
 ```
-rosrun image_nav csv_out_node
+roslaunch image_nav image_nav.launch
 ```
 2. Publish the current GPS coordinates by running:
 
