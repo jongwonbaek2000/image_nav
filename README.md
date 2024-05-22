@@ -137,4 +137,4 @@ This will print ```true``` if the robot is within the threshold distance from an
 Contributions to this package are welcome. If you encounter any issues or have suggestions for improvements, please open an issue or submit a pull request on the GitHub repository.
 
 # License
-This package is released under jongwonbaek2000
+This package is released under MIT License
