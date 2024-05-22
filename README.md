@@ -1,4 +1,4 @@
-# ●This Package is not complite and currently under development
+# ●This Package is not complete and currently under development
 # Image Navigation Package
 The Image Navigation package is a ROS package designed to plan and visualize a collision-free path for a robot in an environment represented by a binary map with gps coordinate(lat, long). The package utilizes the Probabilistic Roadmap (PRM) algorithm to find an optimal path between a given start and goal pose, taking into account obstacles present in the binary map.
 
