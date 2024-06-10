@@ -89,7 +89,7 @@ private:
         current_waypoint_idx_ = 0;
         
     }
-
+/*
     void gpsCallback(const sensor_msgs::NavSatFix::ConstPtr& msg) {
         if (waypoints_.empty()) {
             return;
@@ -123,6 +123,48 @@ private:
         ROS_INFO_STREAM(std::setprecision(8) << "Distance to goal: " << distance_to_goal);
         
     }
+    */
+    void gpsCallback(const sensor_msgs::NavSatFix::ConstPtr& msg) {
+    if (waypoints_.empty()) {
+        return;
+    }
+
+    double current_lat = msg->latitude;
+    double current_lon = msg->longitude;
+
+    // 현재 위치와 목표 waypoint 간의 거리 계산
+    double distance_to_goal = DistanceBtgps(current_lat, current_lon,
+                                            waypoints_[current_waypoint_idx_].first,
+                                            waypoints_[current_waypoint_idx_].second);
+
+    if (distance_to_goal < goal_threshold_) {
+        // 목표점에 도달했으므로 다음 waypoint로 이동
+        current_waypoint_idx_ = (current_waypoint_idx_ + 1) % waypoints_.size();
+    }
+
+    // 다음 waypoint를 /gps_goal_pose 토픽에 발행
+    geometry_msgs::PoseStamped pose;
+    pose.header.stamp = ros::Time::now();
+    pose.header.frame_id = "map";
+    pose.pose.position.x = waypoints_[current_waypoint_idx_].first;
+    pose.pose.position.y = waypoints_[current_waypoint_idx_].second;
+
+    // 쿼터니언 데이터를 설정
+    pose.pose.orientation.x = 0.0;
+    pose.pose.orientation.y = 0.0;
+    pose.pose.orientation.z = 0.0;
+    pose.pose.orientation.w = 1.0;
+
+    goal_pub_.publish(pose);
+
+    ROS_INFO_STREAM(std::setprecision(8) << "Current position: " << current_lat << ", " << current_lon);
+    ROS_INFO_STREAM(std::setprecision(8) << "Goal waypoint: " << waypoints_[current_waypoint_idx_].first << ", " << waypoints_[current_waypoint_idx_].second);
+    ROS_INFO_STREAM(std::setprecision(8) << "Distance to goal: " << distance_to_goal);
+}
+
+
+
+
 
     ros::NodeHandle nh_;
     ros::Subscriber gps_sub_;
@@ -133,6 +175,9 @@ private:
     double goal_threshold_;
     //int first_zero_flag = 1;
 };
+
+
+
 
 int main(int argc, char** argv) {
     ros::init(argc, argv, "csv_out");

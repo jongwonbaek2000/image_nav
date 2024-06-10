@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(image_nav)
 
+#set(CMAKE_CXX_STANDARD 17)
+
+#set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 # C++17 표준 사용
 if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 17)
@@ -8,7 +12,8 @@ endif()
 
 # 컴파일러 플래그 설정
 add_compile_options(-std=c++11)
-# find_package(GeographicLib REQUIRED)
+
+find_package(GeographicLib REQUIRED)
 
 set(GeographicLib_DIR /usr/local/lib/cmake/GeographicLib)
 
