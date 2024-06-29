@@ -6,7 +6,7 @@ The Image Navigation package is a ROS package designed to plan and visualize a c
 # Dependencies
 This package has the following dependencies:
 
- * ROS (Tested on Kinetic and Melodic)
+ * ROS (Tested on Noetic)
  * OpenCV
  * GeographicLib
 
