@@ -1,0 +1,24 @@
+이 문서는 실험계획 및 데모 메뉴얼을 다룬다.
+
+<csv 파일 작성>
+:launch
+roslaunch image_nav image_nav.launch
+
+:출발점
+rostopic pub /robot_pose geometry_msgs/PoseStamped '{ header: { frame_id: "/map" }, pose: { position: { x: 37.33982003631277, y: 126.733611718626 } } }' -1
+
+:도착점 설정
+rostopic pub /ublox_gps sensor_msgs/NavSatFix "{latitude: 37.340727390, longitude: 126.733292419}" -1
+
+
+<gps_goal에 topic 이동 좌표 발신>
+:csv_out_node 실행
+rosrun image_nav csv_out_node
+
+:현재 위치 설정
+rostopic pub /ublox_gps/fix sensor_msgs/NavSatFix "{latitude: 37.340727390, longitude: 126.733292419}" -1
+
+
+
+원리 현재 위치 설정이 저절로 되어야 하는데, /ublox_gps/fix로 입력받던가 그랬음. 그러면 csv_out_node 수정해야 함
+계속된 업데이트가 이루어져야 하니까 필수 사항임.
