@@ -1,22 +1,25 @@
-이 문서는 실험계획 및 데모 메뉴얼을 다룬다.
+테스트
 
 <csv 파일 작성>
 :launch
 roslaunch image_nav image_nav.launch
 
-:출발점
+- 출발점과 도착점을 아래와 같이 "순차" 입력 후 잠시 기다리면, path.csv 파일 생성과 함께(이미 있는 경우 업데이트) 시각화 화면 팝업.
+- 도착점은 아래 좌표로 테스트하는 것을 권장.
+- 시각화가 잘 되었으면, 먼저 image_nav.launch를 cancel(ctrl+C) 후, 시각화 화면 x 눌러 닫기.
+
+:출발점 설정
 rostopic pub /robot_pose geometry_msgs/PoseStamped '{ header: { frame_id: "/map" }, pose: { position: { x: 37.340727102832, y: 126.733292534745 } } }' -1 
 :도착점 설정
 rostopic pub /robot_pose geometry_msgs/PoseStamped '{ header: { frame_id: "/map" }, pose: { position: { x: 37.33982003631277, y: 126.733611718626 } } }' -1
 
-<gps_goal에 topic 이동 좌표 발신>
+<gps_goal_fix topic 이동 좌표 발신>
 :csv_out_node 실행
 rosrun image_nav csv_out_node
-
-:현재 위치 설정
+으로 로봇의 현재위치를 ublox_gps/fix의 좌표와 비교하여, path.csv 파일로 부터 waypoints의 gps_goal_fix 순차 발행.
+(
+:실시간 현재위치 임의 설정 테스트(ublox_gps/fix 이미 발행 시 불필요)
 rostopic pub /ublox_gps/fix sensor_msgs/NavSatFix "{latitude: 37.340727390, longitude: 126.733292419}" -1
+)
 
-
-
-원리 현재 위치 설정이 저절로 되어야 하는데, /ublox_gps/fix로 입력받던가 그랬음. 그러면 csv_out_node 수정해야 함
-계속된 업데이트가 이루어져야 하니까 필수 사항임.
+이후 imnav_goal에서 gps_goal_fix를 수신받아, UTM 좌표로 변환 후 이동(참고: imnav_goal/txts/test.txt)
