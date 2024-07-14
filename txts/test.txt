@@ -5,11 +5,9 @@
 roslaunch image_nav image_nav.launch
 
 :출발점
-rostopic pub /robot_pose geometry_msgs/PoseStamped '{ header: { frame_id: "/map" }, pose: { position: { x: 37.33982003631277, y: 126.733611718626 } } }' -1
-
+rostopic pub /robot_pose geometry_msgs/PoseStamped '{ header: { frame_id: "/map" }, pose: { position: { x: 37.340727102832, y: 126.733292534745 } } }' -1 
 :도착점 설정
-rostopic pub /ublox_gps sensor_msgs/NavSatFix "{latitude: 37.340727390, longitude: 126.733292419}" -1
-
+rostopic pub /robot_pose geometry_msgs/PoseStamped '{ header: { frame_id: "/map" }, pose: { position: { x: 37.33982003631277, y: 126.733611718626 } } }' -1
 
 <gps_goal에 topic 이동 좌표 발신>
 :csv_out_node 실행

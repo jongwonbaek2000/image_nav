@@ -363,7 +363,7 @@ void PathPlanner::planPath(const cv::Mat& binaryMap, const geometry_msgs::PoseSt
     if (path_indices.empty()) {
         ROS_WARN("Path could not be found. Make sure the start and goal locations are reachable.");
         // PRM 시각화
-        visualizePRM(graph, binaryMap, path_indices); //이거 키면, planned_path 안나옴!!! 요주의 문구
+        visualizePRM(graph, binaryMap, path_indices); //이거 키면, planned_path 안나옴!!! 요주의 
         return; // 경로를 찾지 못했으므로 여기서 함수를 종료합니다.
     } else {
         // 경로를 통해 좌표를 추출하고, 후속 처리를 계속합니다.
