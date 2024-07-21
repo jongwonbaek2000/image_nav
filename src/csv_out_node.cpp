@@ -34,7 +34,7 @@ double DistanceBtgps(double lat1, double lon1, double lat2, double lon2) {
 class CsvOut {
 public:
     CsvOut() {
-        nh_.param<double>("goal_threshold", goal_threshold_, 3.0); // 목표점 도달 임계값 (미터)
+        nh_.param<double>("goal_threshold", goal_threshold_, 1.0); // 목표점 도달 임계값 (미터)
 
         gps_sub_ = nh_.subscribe("/ublox_gps/fix", 1, &CsvOut::gpsCallback, this);
         goal_pub_ = nh_.advertise<sensor_msgs::NavSatFix>("/gps_goal_fix", 1);
