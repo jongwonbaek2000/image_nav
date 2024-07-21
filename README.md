@@ -10,6 +10,11 @@ This package has the following dependencies:
  * OpenCV
  * GeographicLib
 
+For Ubuntu, after downloading libgeographic-dev package, following command has to be ran before compilation.
+```bash
+sudo ln -s /usr/share/cmake/geographiclib/FindGeographicLib.cmake /usr/share/cmake-(your CMake version)/Modules/
+```
+
 Make sure these dependencies are installed on your system before proceeding.
 
 # Installation
