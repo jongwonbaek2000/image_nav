@@ -4,12 +4,11 @@
 #include <fstream>
 #include <vector>
 #include <cmath>
-#include <ros/package.h>  // Add this line
+#include <ros/package.h>
 #include "image_nav/path_planner.hpp"
 #include <GeographicLib/Geodesic.hpp>
 #include <GeographicLib/UTMUPS.hpp>
 #include <sstream>
-
 
 double DistanceBtgps(double lat1, double lon1, double lat2, double lon2) {
     auto gpsToUTM = [](double lat, double lon) -> std::tuple<double, double, int> {
@@ -34,7 +33,7 @@ double DistanceBtgps(double lat1, double lon1, double lat2, double lon2) {
 class CsvOut {
 public:
     CsvOut() {
-        nh_.param<double>("goal_threshold", goal_threshold_, 1.0); // 목표점 도달 임계값 (미터)
+        nh_.param<double>("goal_threshold", goal_threshold_, 2.0); // 목표점 도달 임계값 (미터)
 
         gps_sub_ = nh_.subscribe("/ublox_gps/fix", 1, &CsvOut::gpsCallback, this);
         goal_pub_ = nh_.advertise<sensor_msgs::NavSatFix>("/gps_goal_fix", 1);
@@ -84,8 +83,15 @@ private:
                                                 waypoints_[current_waypoint_idx_].second);
 
         if (distance_to_goal < goal_threshold_) {
-            // 목표점에 도달했으므로 다음 waypoint로 이동
-            current_waypoint_idx_ = (current_waypoint_idx_ + 1) % waypoints_.size();
+            // 마지막 목표점에 도달한 경우 노드 종료
+            if (current_waypoint_idx_ == waypoints_.size() - 1) {
+                ROS_INFO("Final waypoint reached. Shutting down node.");
+                ros::shutdown();
+                return;
+            } else {
+                // 목표점에 도달했으므로 다음 waypoint로 이동
+                current_waypoint_idx_++;
+            }
         }
 
         // 다음 waypoint를 /gps_goal_fix 토픽에 발행
