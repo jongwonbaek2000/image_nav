@@ -11,7 +11,7 @@ if(NOT CMAKE_CXX_STANDARD)
 endif()
 
 # 컴파일러 플래그 설정
-add_compile_options(-std=c++11)
+add_compile_options(-std=c++17)
 
 find_package(GeographicLib REQUIRED)
 
@@ -23,7 +23,6 @@ find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   nav_msgs
   message_generation
-  GeographicLib
   roslib
 )
 
