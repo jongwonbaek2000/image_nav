@@ -288,8 +288,8 @@ void PathPlanner::planPath(const cv::Mat& binaryMap, const geometry_msgs::PoseSt
     /////////////////////
     // PRM 알고리즘 실행
     Graph graph;
-    const int numNodes = 12000;
-    const double prmConnectionDistance = 150;
+    const int numNodes = 13000;
+    const double prmConnectionDistance = 200;
 
     // 시작점과 도착점을 노드로 추가
     graph.addNode(start_pixel);
@@ -312,6 +312,7 @@ void PathPlanner::planPath(const cv::Mat& binaryMap, const geometry_msgs::PoseSt
     for (int i = 0; i < numNodes && i < free_areas.size(); i++) {
         graph.addNode(free_areas[i]);
     }
+
     /*
     ROS_INFO("Graph Nodes:");
     for (const auto& node : graph.nodes) {
