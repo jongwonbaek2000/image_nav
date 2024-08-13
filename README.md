@@ -127,14 +127,6 @@ rostopic pub /ublox_gps sensor_msgs/NavSatFix "{latitude: <current_lat>, longitu
 ```
 Replace <current_lat> and <current_lon> with the actual GPS coordinates of the robot.
 
-3. Subscribe to the /destination_reached topic to check if the robot has reached its destination:
-
-```
-rostopic echo /destination_reached
-```
-This will print ```true``` if the robot is within the threshold distance from any of the coordinates in the ```path.csv``` file, and ```false``` otherwise.
-
-
 # Troubleshooting
 * If you encounter any issues or errors, check the ROS logs for error * messages or warnings.
 * Ensure that the dependencies (ROS, OpenCV, GeographicLib) are installed correctly and compatible with your system.
