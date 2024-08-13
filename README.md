@@ -1,3 +1,6 @@
+# image_nav
+GPS path generator for ROS system
+
 # Important
 This package is not complete and currently under development
 # Image Navigation Package
