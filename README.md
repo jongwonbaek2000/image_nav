@@ -109,9 +109,7 @@ The package uses the following ROS topics:
 
 When running `rosrun image_nav csv_out_node`, the node will subscribe to the `/ublox_gps` topic to receive the current GPS coordinates of the robot. It will then compare these coordinates with the coordinates in the `path.csv` file generated during path planning.
 
-If the current GPS coordinates are within a certain threshold distance from any of the coordinates in the `path.csv` file, the node will publish a `true` value on the `/destination_reached` topic using the `std_msgs/Bool` message type. Otherwise, it will publish a `false` value.
-
-You can use this information to determine if the robot has reached its destination based on the planned path.
+If the current GPS coordinates are within a certain threshold distance from any of the coordinates in the `path.csv` file, the node will publish a next goal.
 
 # Usage
 
