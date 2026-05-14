@@ -113,7 +113,7 @@ If the current GPS coordinates are within a certain threshold distance from any 
 ```
 rosrun image_nav csv_out_node
 ```
-2. Publish the current GPS coordinates by running:
+2. Publish the current GPS coordinates by running(just for single shot test; `rosrun image_nav csv_out_node` is recommended):
 
 ```
 rostopic pub /ublox_gps sensor_msgs/NavSatFix "{latitude: <current_lat>, longitude: <current_lon>}" -1
